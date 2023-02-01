@@ -1,6 +1,9 @@
 <?php
 
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpFoundation\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,11 +17,20 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+//    if (auth()->user()){
+//        return redirect('dashboard');
+//    }
+//    return redirect('login');
+    $users = User::with('roles')->get();
+    return view('home', compact('users'));
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return view('dashboard');
+//    abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+    $users = User::with('roles')->get();
+
+    return view('dashboard', compact('users'));
 })->name('dashboard');
 
 Route::group(['middleware' => 'auth'], function () {

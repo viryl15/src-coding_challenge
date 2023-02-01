@@ -32,10 +32,14 @@ class UsersController extends Controller
 
     public function store(StoreUserRequest $request)
     {
-        $user = User::create($request->validated());
+        $user = User::create([
+            'name' => $request->validated()['username'],
+            'email' => $request->validated()['email'],
+            'password' => bcrypt($request->validated()['password']),
+        ]);
         $user->roles()->sync($request->input('roles', []));
 
-        return redirect()->route('users.index');
+        return redirect()->route('dashboard');
     }
 
     public function show(User $user)

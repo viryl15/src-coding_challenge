@@ -69,6 +69,11 @@ class User extends Authenticatable
         });
     }
 
+    public function isAdmin()
+    {
+        return $this->roles()->where('title', '=', 'administrator')->exists();
+    }
+
     public function roles()
     {
         return $this->belongsToMany(Role::class);
